@@ -33,6 +33,6 @@ Promise.all(urls.map(url => new Promise((resolve, reject) => {
             resolve(0);
         })
     })
-)).then(() => {
-    console.log('DONE!');
+)).then((dlRes) => {
+    console.log('DONE! Found', dlRes.filter(res => res === 200).length, 'valid firmware versions');
 }).catch((e) => {})
