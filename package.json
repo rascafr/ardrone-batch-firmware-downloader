@@ -1,0 +1,23 @@
+{
+  "name": "ardrone-batch-firmware-downloader",
+  "version": "0.0.1",
+  "description": "ArDrone 2.0 batch firmware downloader",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ArDrone",
+    "Batch",
+    "plf",
+    "firmware",
+    "downloader"
+  ],
+  "author": "François Lx",
+  "license": "MIT",
+  "dependencies": {
+    "cli-color": "^2.0.0",
+    "node-fetch": "^2.6.0",
+    "rimraf": "^3.0.2"
+  }
+}
