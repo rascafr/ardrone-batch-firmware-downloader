@@ -7,7 +7,7 @@ Thereby, I'm now able to test different versions, and chose the one that offers 
 ## Install
 
 ```bash
-git clone ...
+git clone https://github.com/rascafr/ardrone-batch-firmware-downloader.git
 cd ardrone-batch-firmware-downloader
 npm i
 ```
