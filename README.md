@@ -19,6 +19,9 @@ Edit the `config.js` file as you wish:
 ```js
 module.exports = {
 
+    // where to save the firmware files
+    outPath: `${process.cwd()}/FIRMWARE_FILES`,
+
     // ar drone 1.0 or 2.0?
     ardroneVersion: 2,
 
@@ -38,6 +41,8 @@ module.exports = {
     repository: (x, y, z) => `http://.../ardronefirmware/${x}.${y}.${z}/ardrone${module.exports.ardroneVersion}_update.plf`
 }
 ```
+
+**Warning:** The `outPath` directory will be deleted before downloading the files, so don't set it just to `Desktop` or anything like that...
 
 ### Run it!
 

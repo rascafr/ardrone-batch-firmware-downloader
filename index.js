@@ -1,11 +1,13 @@
 const fetch = require('node-fetch');
 const clc = require('cli-color');
+const fs = require('fs');
 const rimraf = require('rimraf');
 const ok = clc.greenBright;
+const emph = clc.blueBright;
 const config = require('./config');
-const { repository, ardroneVersion } = config;
+const { repository, ardroneVersion, outPath } = config;
 
-console.log(`ArDrone ${ardroneVersion}.0 batch firmware downloader started!`);
+console.log(emph(`ArDrone ${ardroneVersion}.0 batch firmware downloader started!`));
 
 // prepare all urls
 const urls = [];
@@ -21,18 +23,42 @@ for (let ma=config.majorFrom;ma<=config.majorTo;ma++) {
     }
 }
 
-console.log('Will try to fetch firmware from', urls.length, 'different endpoints.\nRunning now...');
+console.log('Will try to fetch firmware from', emph(urls.length), 'different endpoints');
 
-Promise.all(urls.map(url => new Promise((resolve, reject) => {
-        fetch(url.url).then(res => {
-            status = res.status; 
-            if (status === 200) console.log(ok('✓'), url.version, '(', status, ')');
-            //return res.json()
-            resolve(status);
-        }).catch(e => {
-            resolve(0);
+// clean previous directory if any
+rimraf(outPath, () => {
+    console.log('Cleaned output directory', emph(outPath));
+
+    // create out directory
+    fs.mkdirSync(outPath);
+    
+    console.log('Running now...');
+
+    Promise.all(urls.map(url => new Promise((resolve, reject) => {
+            fetch(url.url).then(res => {
+                status = res.status; 
+                if (status === 200) {
+                    console.log(ok('✓'), url.version, emph('( HTTP', status, ')'), 'Downloading...');
+                    const fwPath = `${outPath}/${url.version}-ardrone${ardroneVersion}_update.plf`;
+                    saveFile(res, fwPath).then(() => resolve(status)).catch((err) => reject(err));
+                } else {
+                    resolve(status);
+                }
+            }).catch((err) => {
+                resolve(err);
+            });
         })
-    })
-)).then((dlRes) => {
-    console.log('DONE! Found', dlRes.filter(res => res === 200).length, 'valid firmware versions');
-}).catch((e) => {})
+    )).then((dlRes) => {
+        console.log('Finished,', emph(dlRes.filter(res => res === 200).length), 'valid firmware versions saved to', emph(outPath));
+        process.exit(0);
+    }).catch((e) => { console.error(e); });
+});
+
+function saveFile(response, path) {
+    return new Promise((resolve, reject) => {
+        const dest = fs.createWriteStream(path);
+        response.body.pipe(dest);
+        response.body.on('error', reject);
+        dest.on('finish', resolve);
+    });
+}
