@@ -38,18 +38,21 @@ rimraf(outPath, () => {
             fetch(url.url).then(res => {
                 status = res.status; 
                 if (status === 200) {
-                    console.log(ok('✓'), url.version, emph('( HTTP', status, ')'), 'Downloading...');
+                    console.log(ok('✓'), 'Found firmware for', url.version, emph('( HTTP', status, ')'), ', downloading...');
                     const fwPath = `${outPath}/${url.version}-ardrone${ardroneVersion}_update.plf`;
-                    saveFile(res, fwPath).then(() => resolve(status)).catch((err) => reject(err));
+                    saveFile(res, fwPath).then(() => {
+                        console.log(ok('✓'), url.version, 'firmware downloaded!');
+                        resolve(true)
+                    }).catch((err) => reject(err));
                 } else {
-                    resolve(status);
+                    resolve(false);
                 }
             }).catch((err) => {
-                resolve(err);
+                reject(err);
             });
         })
     )).then((dlRes) => {
-        console.log('Finished,', emph(dlRes.filter(res => res === 200).length), 'valid firmware versions saved to', emph(outPath));
+        console.log('Finished,', emph(dlRes.filter(res => res === true).length), 'valid firmwares files saved to', emph(outPath));
         process.exit(0);
     }).catch((e) => { console.error(e); });
 });
