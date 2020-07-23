@@ -1,5 +1,7 @@
 module.exports = {
 
+    // where to save the firmware files
+    outPath: `${process.cwd()}/FIRMWARE_FILES`,
     // ar drone 1.0 or 2.0?
     ardroneVersion: 2,
 
