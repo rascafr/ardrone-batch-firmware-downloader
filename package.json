@@ -1,6 +1,6 @@
 {
   "name": "ardrone-batch-firmware-downloader",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "ArDrone 2.0 batch firmware downloader",
   "main": "index.js",
   "scripts": {
